@@ -14,20 +14,21 @@ class PageProfile(PageBase):
     SAVE_BUTTON_PROFILE = (By.CSS_SELECTOR, '.save-changes-button')
     EMAIL_FORM_PROFILE = (By.ID, 'email-form')
     W_INPUT_PROFILE = (By.CSS_SELECTOR, '.field-form-block.w-input')
+    JOINED_INPUT_PROFILE_VALUE = 'undefined'
 
     def enter_test_info_input_fields(self):
-        self.driver.wait.until(lambda driver: self.is_field_filed_by_w_input(*self.JOINED_INPUT_PROFILE))
+        self.driver.wait.until_not(lambda driver: self.is_value_matched(self.JOINED_INPUT_PROFILE_VALUE, *self.JOINED_INPUT_PROFILE))
         self.input_text(self.JOINED_INPUT, *self.JOINED_INPUT_PROFILE)
         self.input_text(self.LANGUAGE_INPUT, *self.LANGUAGE_INPUT_PROFILE)
         self.dropdown_select(*self.ROLE_INPUT_PROFILE).select_by_value(self.ROLE_INPUT)
-        self.driver.wait.until(lambda driver: self.is_field_filed_done(self.ROLE_INPUT, *self.ROLE_INPUT_PROFILE))
+        self.driver.wait.until(lambda driver: self.is_value_matched(self.ROLE_INPUT, *self.ROLE_INPUT_PROFILE))
 
     def check_test_info_input_fields(self):
         joined_input_value = self.find_elements(*self.JOINED_INPUT_PROFILE)[0].get_attribute('value')
         language_input_value = self.find_elements(*self.LANGUAGE_INPUT_PROFILE)[0].get_attribute('value')
         role_input_value = self.find_elements(*self.ROLE_INPUT_PROFILE)[0].get_attribute('value')
         print(f'"{joined_input_value}", "{language_input_value}", "{role_input_value}"')
-        assert  joined_input_value == self.JOINED_INPUT, f'Expected {self.JOINED_INPUT}, got {joined_input_value}'
+        assert joined_input_value == self.JOINED_INPUT, f'Expected {self.JOINED_INPUT}, got {joined_input_value}'
         assert language_input_value == self.LANGUAGE_INPUT, f'Expected {self.LANGUAGE_INPUT}, got {language_input_value}'
         assert role_input_value == self.ROLE_INPUT, f'Expected {self.ROLE_INPUT}, got {role_input_value}'
 

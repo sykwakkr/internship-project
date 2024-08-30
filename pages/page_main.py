@@ -11,8 +11,6 @@ class PageMain(PageBase):
         self.open_url(self.REELLY_URL)
 
     def click_settings(self):
-        settings_element = self.driver.find_elements(By.CSS_SELECTOR, '.menu-button-text')[17]
-        print(settings_element.text)
-        settings_element.click()
+        # TODO: Find out a solution for Safari at this step or more following steps
         self.click_element(*self.SETTINGS_BUTTON)
 

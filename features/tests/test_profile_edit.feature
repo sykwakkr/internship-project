@@ -1,4 +1,5 @@
 # Created by jkwak at 8/27/24
+@task
 Feature: Profile Edit Input Function Test
   # Test the function to edit input information on profile.
 
