@@ -9,20 +9,37 @@ from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from app.application import Application
 from selenium.webdriver.support.ui import WebDriverWait
 from support.logger import logger
+import os
 
 
 def browser_init(context, browser='chrome'):
     """
-    :param browser: Browser to use
     :param context: Behave context
+    :param browser: Browser to use
+    :param os: Operating System (window, OS X)
+    :param osVersion: Operating System version (11, sonoma)
     """
+    bs_user = 'j*****'
+    bs_key = 'X*****'
+    bs_url = f'https://{bs_user}:{bs_key}@hub-cloud.browserstack.com/wd/hub'
+
+    desired_cap = {
+        'os': os.getenv('bs_os', 'windows'),
+        'osVersion': os.getenv('bs_osVersion', '11'),
+        'browserName': browser.split('_')[0],
+        'sessionName': 'Internship-Project Features',
+    }
+
     if browser.startswith('chrome'):
         driver_path = ChromeDriverManager().install()
         service = ChromeService(driver_path)
         options = ChromeOptions()
-        options.add_argument('--headless')
         if 'headless' in browser:
+            options.add_argument('--headless')
             context.driver = webdriver.Chrome(service=service, options=options)
+        elif 'cloud' in browser:
+            options.set_capability('bstack:options', desired_cap)
+            context.driver = webdriver.Remote(command_executor=bs_url, options=options)
         else:
             context.driver = webdriver.Chrome(service=service)
     elif browser == 'safari':
@@ -35,9 +52,12 @@ def browser_init(context, browser='chrome'):
         driver_path = GeckoDriverManager().install()
         service = FirefoxService(driver_path)
         options = FirefoxOptions()
-        options.add_argument('--headless')
         if 'headless' in browser:
+            options.add_argument('--headless')
             context.driver = webdriver.Firefox(service=service, options=options)
+        elif 'cloud' in browser:
+            options.set_capability('bstack:options', desired_cap)
+            context.driver = webdriver.Remote(command_executor=bs_url, options=options)
         else:
             context.driver = webdriver.Firefox(service=service)
     else:
@@ -45,12 +65,12 @@ def browser_init(context, browser='chrome'):
 
     context.driver.maximize_window()
     context.driver.implicitly_wait(4)
-    context.driver.wait = WebDriverWait(context.driver, 4)
+    context.driver.wait = WebDriverWait(context.driver, 10)
     context.app = Application(context.driver)
 
 
 def before_scenario(context, scenario):
-    browser = context.config.userdata.get('browser', 'chrome_headless')
+    browser = context.config.userdata.get('browser', 'chrome_cloud')
     print('\nStarted scenario: ', scenario.name)
     logger.info('\n\n### {scenario} ###'.format(scenario=scenario.name))
     logger.info(f'Before scenario: {scenario.name}')
@@ -72,4 +92,3 @@ def after_scenario(context, feature):
     logger.info(f'After scenario: {feature.name}')
     print('\nFinished scenario: ', feature.name)
     context.driver.quit()
-

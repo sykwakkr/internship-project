@@ -12,16 +12,22 @@ class PageProfile(PageBase):
     ROLE_INPUT = 'Developer'
     CLOSE_BUTTON_PROFILE = (By.CSS_SELECTOR, '.close-button.w-button')
     SAVE_BUTTON_PROFILE = (By.CSS_SELECTOR, '.save-changes-button')
-    EMAIL_FORM_PROFILE = (By.ID, 'email-form')
-    W_INPUT_PROFILE = (By.CSS_SELECTOR, '.field-form-block.w-input')
     JOINED_INPUT_PROFILE_VALUE = 'undefined'
+    USER_PROFILE_IMAGE = (By.CSS_SELECTOR, 'img[wized="userProfileImage"]')
+    URL_PROFILE_EDIT = 'edit'
 
     def enter_test_info_input_fields(self):
-        self.driver.wait.until_not(lambda driver: self.is_value_matched(self.JOINED_INPUT_PROFILE_VALUE, *self.JOINED_INPUT_PROFILE))
+        self.wait_until_url_contains(self.URL_PROFILE_EDIT)
+        self.wait_until_all_visible_located(*self.USER_PROFILE_IMAGE)
+        self.wait_until_not_text_present_element_value(self.JOINED_INPUT_PROFILE_VALUE, *self.JOINED_INPUT_PROFILE)
+        cur_joined_value = self.driver.find_element(*self.JOINED_INPUT_PROFILE).get_attribute('value')  # To avoid from appending input values to existing value
+        self.wait_until_text_present_element_value(cur_joined_value, *self.JOINED_INPUT_PROFILE)
         self.input_text(self.JOINED_INPUT, *self.JOINED_INPUT_PROFILE)
+        self.wait_until_text_present_element_value(self.JOINED_INPUT, *self.JOINED_INPUT_PROFILE)
         self.input_text(self.LANGUAGE_INPUT, *self.LANGUAGE_INPUT_PROFILE)
+        self.wait_until_text_present_element_value(self.LANGUAGE_INPUT, *self.LANGUAGE_INPUT_PROFILE)
         self.dropdown_select(*self.ROLE_INPUT_PROFILE).select_by_value(self.ROLE_INPUT)
-        self.driver.wait.until(lambda driver: self.is_value_matched(self.ROLE_INPUT, *self.ROLE_INPUT_PROFILE))
+        self.wait_until_text_present_element_value(self.ROLE_INPUT, *self.ROLE_INPUT_PROFILE)
 
     def check_test_info_input_fields(self):
         joined_input_value = self.find_elements(*self.JOINED_INPUT_PROFILE)[0].get_attribute('value')

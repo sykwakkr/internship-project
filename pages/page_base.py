@@ -10,9 +10,6 @@ class PageBase:
     def open_url(self, url):
         self.driver.get(url)
 
-    def is_value_matched(self, value, *locator):
-        return self.driver.find_element(*locator).get_attribute('value') == value
-
     def clear_input(self, *locator):
         self.driver.find_element(*locator).clear()
 
@@ -33,8 +30,20 @@ class PageBase:
         select = Select(self.find_elements(*locator)[0])
         return select
 
-    def wait_until_all_visible(self, *locator):
+    def wait_until_all_visible_located(self, *locator):
         self.driver.wait.until(EC.visibility_of_all_elements_located(locator), message=f'All Elements are not visible.')
 
     def wait_until_clickable(self, *locator):
         self.driver.wait.until(EC.element_to_be_clickable(locator), message=f'Clickable Elements are not visible.')
+
+    def wait_until_url_contains(self, url):
+        self.driver.wait.until(EC.url_contains(url))
+
+    def wait_until_not_text_present_element(self, text, *locator):
+        self.driver.wait.until_not(EC.text_to_be_present_in_element(locator, text))
+
+    def wait_until_not_text_present_element_value(self, value, *locator):
+        self.driver.wait.until_not(EC.text_to_be_present_in_element_value(locator, value))
+
+    def wait_until_text_present_element_value(self, value, *locator):
+        self.driver.wait.until(EC.text_to_be_present_in_element_value(locator, value))

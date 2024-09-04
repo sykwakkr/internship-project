@@ -4,9 +4,11 @@ from time import sleep
 
 
 class PageSettings(PageBase):
+    DATA_PROFILE_SETTING = (By.CSS_SELECTOR, 'div.data-profile-setting')
     EDIT_PROFILE_BUTTON = (By.XPATH, '//div[text()="Edit profile"]')
-    DATA_PROFILE_SETTING = (By.CSS_SELECTOR, '.data-profile-setting')
+    URL_SETTING = 'settings'
 
     def click_edit_profile(self):
-        self.wait_until_all_visible(*self.DATA_PROFILE_SETTING)
+        self.wait_until_url_contains(self.URL_SETTING)
+        self.wait_until_all_visible_located(*self.DATA_PROFILE_SETTING)
         self.click_element(*self.EDIT_PROFILE_BUTTON)
