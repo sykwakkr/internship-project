@@ -12,6 +12,8 @@ from support.logger import logger
 import os
 
 
+# from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
 def browser_init(context, browser='chrome'):
     """
     :param context: Behave context
@@ -22,6 +24,7 @@ def browser_init(context, browser='chrome'):
     bs_user = 'j*****'
     bs_key = 'X*****'
     bs_url = f'https://{bs_user}:{bs_key}@hub-cloud.browserstack.com/wd/hub'
+    context.browser_mode = browser
 
     desired_cap = {
         'os': os.getenv('bs_os', 'windows'),
@@ -40,6 +43,14 @@ def browser_init(context, browser='chrome'):
         elif 'cloud' in browser:
             options.set_capability('bstack:options', desired_cap)
             context.driver = webdriver.Remote(command_executor=bs_url, options=options)
+        elif 'mobile' in browser:
+            mobile_emulation = {'deviceName': 'Nexus 5'}
+            options.add_experimental_option('mobileEmulation', mobile_emulation)
+            if 'bstack' in browser:
+                options.set_capability('bstack:options', desired_cap)
+                context.driver = webdriver.Remote(command_executor=bs_url, options=options)
+            else:
+                context.driver = webdriver.Chrome(service=service, options=options)
         else:
             context.driver = webdriver.Chrome(service=service)
     elif browser == 'safari':
@@ -63,14 +74,14 @@ def browser_init(context, browser='chrome'):
     else:
         print(f'Browser {browser} not supported')
 
-    context.driver.maximize_window()
+    if 'mobile' not in browser: context.driver.maximize_window()
     context.driver.implicitly_wait(4)
     context.driver.wait = WebDriverWait(context.driver, 10)
     context.app = Application(context.driver)
 
 
 def before_scenario(context, scenario):
-    browser = context.config.userdata.get('browser', 'chrome_cloud')
+    browser = context.config.userdata.get('browser', 'chrome_mobile_bstack')
     print('\nStarted scenario: ', scenario.name)
     logger.info('\n\n### {scenario} ###'.format(scenario=scenario.name))
     logger.info(f'Before scenario: {scenario.name}')

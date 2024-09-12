@@ -13,4 +13,4 @@ def check_test_info_input_fields(context):
 
 @then('Check “Close” and “Save Changes” buttons are available and clickable')
 def check_close_save_buttons(context):
-    context.app.page_profile.check_close_save_buttons()
+    context.app.page_profile.check_close_save_buttons(context.browser_mode)

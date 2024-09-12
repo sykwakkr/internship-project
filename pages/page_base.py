@@ -47,3 +47,6 @@ class PageBase:
 
     def wait_until_text_present_element_value(self, value, *locator):
         self.driver.wait.until(EC.text_to_be_present_in_element_value(locator, value))
+
+    def clear_text(self, *locator):
+        self.driver.find_element(*locator).clear()

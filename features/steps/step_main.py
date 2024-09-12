@@ -8,5 +8,5 @@ def open_main_page(context):
 
 @when('Click on settings option')
 def click_settings(context):
-    context.app.page_main.click_settings()
+    context.app.page_main.click_settings(context.browser_mode)
 
