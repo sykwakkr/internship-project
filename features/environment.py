@@ -6,9 +6,12 @@ from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.safari.options import Options as SafariOptions
+from selenium.webdriver.edge.options import Options as EdgeOptions
 from app.application import Application
 from selenium.webdriver.support.ui import WebDriverWait
 from support.logger import logger
+from dotenv import load_dotenv
 import os
 
 
@@ -21,14 +24,19 @@ def browser_init(context, browser='chrome'):
     :param os: Operating System (window, OS X)
     :param osVersion: Operating System version (11, sonoma)
     """
-    bs_user = 'j*****'
-    bs_key = 'X*****'
+
+    # Load the environment variables from the .env file
+    load_dotenv()
+
+    # Access the variables using os.getenv()
+    bs_user = os.getenv('BS_USER')
+    bs_key = os.getenv('BS_KEY')
     bs_url = f'https://{bs_user}:{bs_key}@hub-cloud.browserstack.com/wd/hub'
     context.browser_mode = browser
 
     desired_cap = {
-        'os': os.getenv('bs_os', 'windows'),
-        'osVersion': os.getenv('bs_osVersion', '11'),
+        'os': os.getenv('bs_os', 'windows'),  # windows, OS X
+        'osVersion': os.getenv('bs_osVersion', '11'),  # 11, Sonoma
         'browserName': browser.split('_')[0],
         'sessionName': 'Internship-Project Features',
     }
@@ -54,7 +62,15 @@ def browser_init(context, browser='chrome'):
         else:
             context.driver = webdriver.Chrome(service=service)
     elif browser == 'safari':
-        context.driver = webdriver.Safari()
+        options = SafariOptions()
+        if 'headless' in browser:
+            options.add_argument('--headless')
+            context.driver = webdriver.Safari(options=options)
+        elif 'cloud' in browser:
+            options.set_capability('bstack:options', desired_cap)
+            context.driver = webdriver.Remote(command_executor=bs_url, options=options)
+        else:
+            context.driver = webdriver.Safari()
     elif browser == 'edge':
         driver_path = '/Users/jkwak/Desktop/QA/python-selenium-automation/drivers/msedgedriver'
         service = EdgeService(executable_path=driver_path)
@@ -81,7 +97,7 @@ def browser_init(context, browser='chrome'):
 
 
 def before_scenario(context, scenario):
-    browser = context.config.userdata.get('browser', 'chrome_mobile_bstack')
+    browser = context.config.userdata.get('browser', 'chrome')
     print('\nStarted scenario: ', scenario.name)
     logger.info('\n\n### {scenario} ###'.format(scenario=scenario.name))
     logger.info(f'Before scenario: {scenario.name}')

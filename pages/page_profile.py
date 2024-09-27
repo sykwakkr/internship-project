@@ -15,14 +15,13 @@ class PageProfile(PageBase):
     BUTTON_PROFILE = (By.CSS_SELECTOR, '.button-profile .save-changes-button')
     JOINED_INPUT_PROFILE_VALUE = 'undefined'
     USER_UPLOADED_IMAGE = (By.CSS_SELECTOR, 'img[wized="userUploadedImage"]')
-    URL_PROFILE_EDIT = 'edit'
+    URL_PROFILE_EDIT = 'profile-edit'
     PROFILE_BUTTON_SAVE_BLOCK = (By.CSS_SELECTOR, 'div.profile-button-block .save-changes-button')
     PROFILE_BUTTON_SAVE = (By.CSS_SELECTOR, 'div.profile-button .save-changes-button')
     PROFILE_BUTTON_CLOSE_BLOCK = (By.CSS_SELECTOR, 'div.profile-button-block .close-button.w-button')
     PROFILE_BUTTON_CLOSE = (By.CSS_SELECTOR, 'div.profile-button .close-button.w-button')
 
     def enter_test_info_input_fields(self):
-        self.wait_until_url_contains(self.URL_PROFILE_EDIT)
         self.wait_until_all_visible_located(*self.USER_UPLOADED_IMAGE)
         self.wait_until_not_text_present_element_value(self.JOINED_INPUT_PROFILE_VALUE, *self.JOINED_INPUT_PROFILE)
         cur_joined_value = self.driver.find_element(*self.JOINED_INPUT_PROFILE).get_attribute('value')  # To avoid from appending input values to existing value

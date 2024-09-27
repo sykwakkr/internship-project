@@ -1,5 +1,7 @@
+from selenium.common import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.by import By
 from time import sleep
 
 
@@ -50,3 +52,9 @@ class PageBase:
 
     def clear_text(self, *locator):
         self.driver.find_element(*locator).clear()
+
+    def wait_until_body_change(self, value):
+        """ Wait until the <body> element's class attribute changes to the target body's class attribute name. """
+        self.driver.wait.until(lambda driver: self.driver.find_element(By.TAG_NAME, 'body').get_attribute('class') == value)
+
+
