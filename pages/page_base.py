@@ -2,6 +2,7 @@ from selenium.common import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
 from time import sleep
 
 
@@ -57,4 +58,30 @@ class PageBase:
         """ Wait until the <body> element's class attribute changes to the target body's class attribute name. """
         self.driver.wait.until(lambda driver: self.driver.find_element(By.TAG_NAME, 'body').get_attribute('class') == value)
 
+    def move_to_element_and_click(self, *locator):
+        """ Use ActionChains to move to an element and click on it."""
+        element = self.driver.find_element(*locator)
+        ActionChains(self.driver).move_to_element(element).click().perform()
 
+    def scroll_to_element_and_click(self, *locator):
+        """ Scroll the element into view and then click it. """
+        element = self.driver.find_element(*locator)
+        self.driver.execute_script("arguments[0].scrollIntoView();", element)
+        element.click()
+
+    def scroll_to_bottom_and_verify(self, context):
+        """ Scroll to the bottom of the page."""
+        # Scroll to the bottom of the page
+        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+        # Get the total height of the page and the current scroll position
+        total_page_height = self.driver.execute_script("return document.body.scrollHeight;")
+        current_scroll_position = self.driver.execute_script("return window.pageYOffset + window.innerHeight;")
+
+        # Verify scroll position
+        if current_scroll_position >= total_page_height:
+            context.logger.info('Successfully scrolled to the bottom')
+        else:
+            message = f'Expected to be at the bottom of page, but was not. Current scroll position: {current_scroll_position} out of {total_page_height}'
+            context.logger.error(message)
+            assert False, message

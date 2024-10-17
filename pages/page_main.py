@@ -11,6 +11,9 @@ class PageMain(PageBase):
     USER_PROFILE_IMAGE = (By.CSS_SELECTOR, 'img[wized="userProfileImage"]')
     CARD_OF_PROPERTY = (By.CSS_SELECTOR, 'div[wized="projectsListing"] [w-list-index-value="0"] div.project-image')
     BODY_SETTING = 'body-setting'
+    SECONDARY_BUTTON = (By.XPATH, '//div[contains(text(), "Secondary")]')
+    MOBILE_SECONDARY_BUTTON = (By.XPATH, '//a[@class="menu-text-link-leaderboard" and text()="Secondary"]')
+    BODY_SECONDARY = 'body-gray'
 
     def open_main_page(self):
         self.open_url(self.REELLY_URL)
@@ -23,4 +26,13 @@ class PageMain(PageBase):
             self.wait_until_all_visible_located(*self.CARD_OF_PROPERTY)
             self.click_element(*self.SETTINGS_BUTTON)
         self.wait_until_body_change(self.BODY_SETTING)
+
+    def click_secondary_menu(self, browser_mode):
+        if 'mobile' in browser_mode:
+            self.click_element(*self.MOBILE_SECONDARY_BUTTON)
+        else:
+            self.wait_until_all_visible_located(*self.CARD_OF_PROPERTY)
+            self.click_element(*self.SECONDARY_BUTTON)
+        self.wait_until_body_change(self.BODY_SECONDARY)
+
 

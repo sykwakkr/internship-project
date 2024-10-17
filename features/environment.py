@@ -33,12 +33,13 @@ def browser_init(context, browser='chrome'):
     bs_key = os.getenv('BS_KEY')
     bs_url = f'https://{bs_user}:{bs_key}@hub-cloud.browserstack.com/wd/hub'
     context.browser_mode = browser
+    context.logger = logger
 
     desired_cap = {
         'os': os.getenv('bs_os', 'windows'),  # windows, OS X
         'osVersion': os.getenv('bs_osVersion', '11'),  # 11, Sonoma
         'browserName': browser.split('_')[0],
-        'sessionName': 'Internship-Project Features',
+        'sessionName': 'Internship Continuation Features',
     }
 
     if browser.startswith('chrome'):

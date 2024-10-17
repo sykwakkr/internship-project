@@ -1,4 +1,5 @@
 # Created by jkwak at 9/24/24
+@task @continue
 Feature: Setting page verification
   In this feature, we will verify if Setting page appears with correct elements and connections
 
