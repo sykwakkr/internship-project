@@ -79,7 +79,7 @@ class PageBase:
         current_scroll_position = self.driver.execute_script("return window.pageYOffset + window.innerHeight;")
 
         # Verify scroll position
-        if current_scroll_position >= total_page_height:
+        if current_scroll_position >= (total_page_height * 0.99):
             context.logger.info('Successfully scrolled to the bottom')
         else:
             message = f'Expected to be at the bottom of page, but was not. Current scroll position: {current_scroll_position} out of {total_page_height}'

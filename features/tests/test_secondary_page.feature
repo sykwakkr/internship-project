@@ -9,6 +9,16 @@ Feature: Secondary-listings Page Verification
     And Click on "Secondary" option at the left side menu
     Then Verify the right page opens
     When Click on Filters
-    And Filter the products by "want to sell"
+    And Filter the products by "Want to sell"
     And Click on Apply Filter
-    Then Verify all cards have "for sale" page
+    Then Verify all cards have "for sale"
+
+  Scenario: User can filter the Secondary deals by "want to buy" option
+    Given Open the main page https://soft.reelly.io
+    When Log in to the page
+    And Click on "Secondary" option at the left side menu
+    Then Verify the right page opens
+    When Click on Filters
+    And Filter the products by "Want to buy"
+    And Click on Apply Filter
+    Then Verify all cards have "Want to buy"
